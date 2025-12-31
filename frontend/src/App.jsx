@@ -9,9 +9,9 @@ const LEAGUES = {
 };
 
 function App() {
-  const [league, setLeague] = useState("epl");
-  const [articles, setArticles] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [league, setLeague] = useState("epl"); //set state for default league
+  const [articles, setArticles] = useState([]); //set state for default article
+  const [loading, setLoading] = useState(false); //set state to handle loading and reloading
 
   // At the top
   const [theme, setTheme] = useState(() => {
