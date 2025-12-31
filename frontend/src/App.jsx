@@ -1,35 +1,105 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+import { useEffect, useState } from "react";
+import SkeletonCard from "./components/SkeletonCard";
+
+const LEAGUES = {
+  epl: "Premier League",
+  ucl: "Champions League",
+  laliga: "La Liga",
+  seriea: "Serie A",
+};
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [league, setLeague] = useState("epl");
+  const [articles, setArticles] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  // At the top
+  const [theme, setTheme] = useState(() => {
+    // Lazy initialization from localStorage
+    return localStorage.getItem("theme") || "light";
+  });
+
+  // Sync theme to localStorage AND document attribute
+  useEffect(() => {
+    localStorage.setItem("theme", theme);
+    document.documentElement.setAttribute("data-theme", theme);
+  }, [theme]);
+
+  // Fetch articles when league changes
+  useEffect(() => {
+    setLoading(true);
+    fetch(`http://127.0.0.1:8000/api/news/football/?league=${league}`)
+      .then((res) => res.json())
+      .then((data) => {
+        setArticles(data.articles);
+        setLoading(false);
+      })
+      .catch(() => setLoading(false));
+  }, [league]);
 
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="container">
+      {/* Dark mode toggle */}
+      <header
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}
+      >
+        <h1 style={{ margin: 0 }}>Hume Sports</h1>
+        <button
+          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+          style={{
+            padding: "6px 12px",
+            cursor: "pointer",
+            borderRadius: "6px",
+            border: "none",
+            background: "var(--tab)",
+            color: "var(--text)",
+          }}
+        >
+          {theme === "light" ? "🌙 Dark mode" : "☀️ Light mode"}
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
+      </header>
+
+      <h1>{LEAGUES[league]} News</h1>
+
+      {/* Tabs */}
+      <div className="tabs">
+        {Object.entries(LEAGUES).map(([key, label]) => (
+          <button
+            key={key}
+            className={league === key ? "active" : ""}
+            onClick={() => setLeague(key)}
+          >
+            {label}
+          </button>
+        ))}
       </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
-  )
+
+      {/* Grid */}
+      <div className="grid">
+        {loading &&
+          Array.from({ length: 6 }).map((_, i) => <SkeletonCard key={i} />)}
+
+        {!loading &&
+          articles.map((article, index) => (
+            <div className="card" key={index}>
+              {article.image && <img src={article.image} alt="" />}
+              <h3>{article.title}</h3>
+              <p>{article.description}</p>
+              <small>{article.source}</small>
+              <br />
+              <a href={article.url} target="_blank" rel="noreferrer">
+                Read more
+              </a>
+            </div>
+          ))}
+      </div>
+    </div>
+  );
 }
 
-export default App
+export default App;
