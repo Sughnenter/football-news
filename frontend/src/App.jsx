@@ -12,6 +12,7 @@ function App() {
   const [league, setLeague] = useState("epl"); //set state for default league
   const [articles, setArticles] = useState([]); //set state for default article
   const [loading, setLoading] = useState(false); //set state to handle loading and reloading
+  const [menuOpen, setMenuOpen] = useState(false); //set state for toggling the hamburger menu icon
 
   // At the top
   const [theme, setTheme] = useState(() => {
@@ -40,44 +41,56 @@ function App() {
   return (
     <div className="container">
       {/* Dark mode toggle */}
-      <header
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          marginBottom: "20px",
-        }}
-      >
-        <h1 style={{ margin: 0 }}>Hume Sports</h1>
-        <button
-          onClick={() => setTheme(theme === "light" ? "dark" : "light")}
-          style={{
-            padding: "6px 12px",
-            cursor: "pointer",
-            borderRadius: "6px",
-            border: "none",
-            background: "var(--tab)",
-            color: "var(--text)",
-          }}
-        >
-          {theme === "light" ? "🌙 Dark mode" : "☀️ Light mode"}
-        </button>
+      <header className="header">
+        <h1>Hume Sports</h1>
+
+        <div className="header-actions">
+          {/* Desktop tabs */}
+          <div className="tabs desktop-tabs">
+            {Object.entries(LEAGUES).map(([key, label]) => (
+              <button
+                key={key}
+                className={league === key ? "active" : ""}
+                onClick={() => setLeague(key)}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+
+          {/* Theme toggle */}
+          <button
+            className="theme-toggle"
+            onClick={() => setTheme(theme === "light" ? "dark" : "light")}
+          >
+            {theme === "light" ? "🌙" : "☀️"}
+          </button>
+
+          {/* Hamburger (mobile only) */}
+          <button className="hamburger" onClick={() => setMenuOpen(!menuOpen)}>
+            ☰
+          </button>
+        </div>
       </header>
+      {menuOpen && (
+        <div className="mobile-menu">
+          {Object.entries(LEAGUES).map(([key, label]) => (
+            <button
+              key={key}
+              onClick={() => {
+                setLeague(key);
+                setMenuOpen(false);
+              }}
+            >
+              {label}
+            </button>
+          ))}
+        </div>
+      )}
 
       <h1>{LEAGUES[league]} News</h1>
 
-      {/* Tabs */}
-      <div className="tabs">
-        {Object.entries(LEAGUES).map(([key, label]) => (
-          <button
-            key={key}
-            className={league === key ? "active" : ""}
-            onClick={() => setLeague(key)}
-          >
-            {label}
-          </button>
-        ))}
-      </div>
+      
 
       {/* Grid */}
       <div className="grid">

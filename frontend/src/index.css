@@ -14,9 +14,6 @@
   --tab: #2a2e38;
 }
 
-
-
-
 * {
   box-sizing: border-box;
 }
@@ -106,9 +103,15 @@ body {
 }
 
 @keyframes pulse {
-  0% { opacity: 1; }
-  50% { opacity: 0.4; }
-  100% { opacity: 1; }
+  0% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    opacity: 1;
+  }
 }
 
 header h1 {
@@ -117,4 +120,95 @@ header h1 {
 
 header button {
   font-size: 14px;
+}
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem 1.5rem;
+}
+
+.header h1 {
+  font-size: 1.4rem;
+  font-weight: 700;
+  /* reset default h1 margins so vertical centering works as expected */
+  margin: 0;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+/* When tabs are used inside the header we don't want the global tabs bottom margin to
+   create extra height. Reset it here so header items stay aligned on a single row. */
+.header .tabs {
+  margin-bottom: 0;
+}
+
+.hamburger {
+  display: none;
+  font-size: 20px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text);
+}
+
+.desktop-tabs {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.desktop-tabs button {
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+}
+
+.theme-toggle {
+  padding: 0.4rem 0.6rem;
+  border-radius: 6px;
+  border: 1px solid currentColor;
+  cursor: pointer;
+}
+
+.mobile-menu {
+  display: none;
+  flex-direction: column;
+  background: var(--card);
+  border-radius: 8px;
+  padding: 10px;
+  margin-bottom: 16px;
+}
+
+.mobile-menu button {
+  padding: 10px;
+  text-align: left;
+  background: none;
+  border: none;
+  color: var(--text);
+  cursor: pointer;
+}
+.hamburger {
+  display: none;
+  font-size: 1.3rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .desktop-tabs {
+    display: none;
+  }
+
+  .hamburger {
+    display: block;
+  }
+
+  .mobile-menu {
+    display: flex;
+  }
 }
