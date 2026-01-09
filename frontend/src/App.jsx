@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import SkeletonCard from "./components/SkeletonCard";
+import placeholder from "./assets/placeholder.png"
 
 const LEAGUES = {
   epl: "Premier League",
@@ -13,6 +14,7 @@ function App() {
   const [articles, setArticles] = useState([]); //set state for default article
   const [loading, setLoading] = useState(false); //set state to handle loading and reloading
   const [menuOpen, setMenuOpen] = useState(false); //set state for toggling the hamburger menu icon
+  const [error, setError] = useState(false); //set use state for error handling
 
   // At the top
   const [theme, setTheme] = useState(() => {
@@ -28,15 +30,51 @@ function App() {
 
   // Fetch articles when league changes
   useEffect(() => {
-    setLoading(true);
-    fetch(`http://127.0.0.1:8000/api/news/football/?league=${league}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setArticles(data.articles);
+    const fetchNews = async () => {
+      setLoading(true);
+      setError(null);
+
+      try {
+        const res = await fetch(
+          `http://127.0.0.1:8000/api/news/football/?league=${league}`
+        );
+
+        if (!res.ok) {
+          throw new Error("Failed to fetch news");
+        }
+
+        const data = await res.json();
+        setArticles(data.articles || []);
+      } catch (error) {
+        setError("Unable to load news. Try again later.");
+        setArticles([]);
+      } finally {
         setLoading(false);
-      })
-      .catch(() => setLoading(false));
+      }
+    };
+
+    fetchNews();
   }, [league]);
+  if (loading) {
+    return <SkeletonCard />;
+  }
+
+  if (error) {
+    return (
+      <div className="state error">
+        <p>{error}</p>
+        <button onClick={() => window.location.reload()}>Retry</button>
+      </div>
+    );
+  }
+
+  if (!articles.length) {
+    return (
+      <div className="state empty">
+        <p>No football news available for this league.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="container">
@@ -90,8 +128,6 @@ function App() {
 
       <h1>{LEAGUES[league]} News</h1>
 
-      
-
       {/* Grid */}
       <div className="grid">
         {loading &&
@@ -100,7 +136,14 @@ function App() {
         {!loading &&
           articles.map((article, index) => (
             <div className="card" key={index}>
-              {article.image && <img src={article.image} alt="" />}
+              {article.image && (
+                <img
+                  src={article.image}
+                  loading="lazy"
+                  onError={(e) => (e.target.src = { placeholder })}
+                  alt="article mage"
+                />
+              )}
               <h3>{article.title}</h3>
               <p>{article.description}</p>
               <small>{article.source}</small>

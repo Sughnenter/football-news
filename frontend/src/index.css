@@ -1,4 +1,7 @@
+@import url('https://fonts.googleapis.com/css2?family=Manrope:wght@200;300;400;500;600;700;800&display=swap');
+
 :root {
+  --font-family: 'Manrope', sans-serif;
   --bg: #f6f7f9;
   --card: #ffffff;
   --text: #111111;
@@ -20,11 +23,14 @@
 
 body {
   margin: 0;
-  font-family: system-ui, sans-serif;
+  font-family: var(--font-family);
   background: var(--bg);
   color: var(--text);
+  line-height: 1.6;
 }
-
+h1, h2, h3{
+  line-height: 1.2;
+}
 /* Layout */
 .container {
   max-width: 1100px;

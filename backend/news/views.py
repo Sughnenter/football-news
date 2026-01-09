@@ -1,5 +1,6 @@
 from django.shortcuts import render
-
+import requests
+import os
 from django.http import JsonResponse
 from django.core.cache import cache
 from .services import fetch_football_news
@@ -34,4 +35,3 @@ def football_news(request):
     }
 
     return JsonResponse(response)
-
