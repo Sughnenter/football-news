@@ -45,7 +45,7 @@ function App() {
 
         const data = await res.json();
         setArticles(data.articles || []);
-      } catch (error) {
+      } catch (err) {
         setError("Unable to load news. Try again later.");
         setArticles([]);
       } finally {
