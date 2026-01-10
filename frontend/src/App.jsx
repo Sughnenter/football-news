@@ -8,6 +8,7 @@ const LEAGUES = {
   laliga: "La Liga",
   seriea: "Serie A",
 };
+const API_BASE = "https://football-news-himp.onrender.com";
 
 function App() {
   const [league, setLeague] = useState("epl"); //set state for default league
@@ -36,7 +37,7 @@ function App() {
 
       try {
         const res = await fetch(
-          `http://127.0.0.1:8000/api/news/football/?league=${league}`
+          `${API_BASE}/api/news/football/?league=${league}`
         );
 
         if (!res.ok) {
